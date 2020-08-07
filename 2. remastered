@@ -1,0 +1,109 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<ctype.h>
+
+struct osoba;
+typedef struct osoba* position;
+typedef struct osoba
+{
+	char ime[100];
+	char prezime[100];
+	int godina;
+	osoba* next;
+
+}osoba;
+
+osoba* StvoriNoviElement()
+{
+	osoba* temp = NULL;
+	temp = (osoba*)malloc(sizeof(osoba));
+	temp->next = NULL;
+	printf("Unesite ime:\n");
+	scanf("%s", temp->ime);
+	if (!strcmp(temp->ime,"kraj"))
+	{
+		return NULL; }
+	printf("Unesite prezime:\n");
+	scanf("%s", temp->prezime);
+	printf("Unesite godinu rodenja:\n");
+	scanf("%d", &(temp)->godina);
+	
+
+	return temp;
+}
+
+/*void UbaciNaKraj( osoba* s)
+{
+	int i = 0;
+	bool uvjet=true;
+	osoba* temp = NULL;
+	do
+	{
+
+		temp = StvoriNoviElement();
+		if (temp == NULL)
+		{
+			uvjet = false;
+		}
+		else
+		{ s->next = temp;
+		temp->next = NULL;
+		s = s->next;
+		}
+		
+
+	} while (uvjet);
+}
+*/
+void UbaciNaPocetak(osoba* s)
+{
+	int i = 0;
+	bool uvjet = true;
+	osoba* temp = NULL;
+	do
+	{
+
+		temp = StvoriNoviElement();
+		if (temp == NULL)
+		{
+			uvjet = false;
+		}
+		else
+		{
+			
+			temp->next = s->next;
+			s->next= temp;
+		}
+
+
+	} while (uvjet);
+
+}
+
+
+void IspisiListu(osoba* s)
+{
+	s = s->next;
+
+	do
+	{
+		printf("Ime je %s, prezime %s i godina rodenja %d.\n", s->ime, s->prezime, s->godina);
+		s = s->next;
+	} while (s != NULL);
+
+}
+
+int main()
+{
+	int n;
+	osoba head;
+	head.next = NULL;
+	
+	//UbaciNaKraj( &head);
+	UbaciNaPocetak(&head);
+
+	IspisiListu(&head);
+	return 0;
+};
