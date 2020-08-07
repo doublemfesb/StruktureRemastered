@@ -1,0 +1,71 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<ctype.h>
+
+struct osoba;
+typedef struct osoba *position;
+typedef struct osoba 
+{
+	char ime[100];
+	char prezime[100];
+	int godina;
+	osoba* next;
+
+}osoba;
+
+osoba* StvoriNoviElement()
+{
+	osoba* temp = NULL;
+	temp = (osoba*)malloc(sizeof(osoba));
+	temp->next = NULL;
+	printf("Unesite ime:\n");
+	scanf("%s", temp->ime);
+	printf("Unesite prezime:\n");
+	scanf("%s", temp->prezime);
+	printf("Unesite godinu rodenja:\n");
+	scanf("%d", &(temp)->godina);
+
+	return temp;
+}
+
+void StvoriListu(int n,osoba* s  )
+{
+	int i = 0;
+	osoba* temp = NULL;
+	for (i = 0; i < n; i++)
+	{
+		
+		temp=StvoriNoviElement();
+			
+			s->next = temp;
+			temp->next = NULL;
+			s = s->next;
+	
+	}
+}
+
+	void IspisiListu (osoba* s)
+	{
+		s = s->next;
+
+		do
+		{
+			printf("Ime je %s, prezime %s i godina rodenja %d.\n", s->ime, s->prezime, s->godina);
+			s = s->next;
+		} while (s != NULL);
+
+	}
+
+int main()
+{
+	int n;
+	osoba head;
+	head.next = NULL;
+	printf("Unesite broj covrova:\n");
+	scanf("%d", &n);
+	StvoriListu(n,&head);
+	IspisiListu(&head);
+	return 0;
+};
