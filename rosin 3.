@@ -1,0 +1,281 @@
+#define _CRT_SECURE_NO_WARNINGS
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<string>
+
+
+struct osoba;
+typedef struct osoba* Position;
+
+typedef struct osoba
+{
+	char *ime;
+	char *prezime;
+	int god;
+	Position next;
+
+}Osoba;
+void DodajNaKraj(Position);
+void DodajNaPocetak(char[], char[], int, Position);
+void Ispis(Position);
+Position PronadiPoPrezimenu( Position);
+void IspisiElement(Position);
+void Dealokacija(Position);
+void BrisanjeElementa(int, Position);
+Position TraziPrethodni(int, Position);
+void UmetniNakon(char[], char[], int, int, Position);
+void UmetniIspred(char[], char[], int, int, Position);
+void Sortiraj(Position);
+void BrisiSve(Position);
+int main()
+{
+	Osoba head;
+	head.next = NULL;
+	char ime[100];
+	char prezime[100];
+	int dob = 0;
+	int odabir = 1;
+	
+	while (odabir != 0)
+	{
+		system("cls");
+		printf("\n2. zadatak iz struktura podataka\n");
+		printf("Dodaj na kraj(press 1):\n");
+		printf("Dodaj na pocetak(press 2):\n");
+		printf("Ispis liste(press 3):\n");
+		printf("Trazenje elementa po prezimenu(press 4):\n");
+		printf("Brisanje elementa iz liste(press 5):\n");
+		printf("Umetni element nakon godine rodenja (press 6):\n");
+		printf("Umetni element ispred godine rodenja (press 7):\n");
+		printf("Brisanje cijele liste (press 8):\n");
+		printf("Sortiraj po prezimenu (press 9):\n");
+		printf("Izlaz iz programa(press 0):\n");
+		printf("ODABIR:\n\n");
+		scanf("%d", &odabir);
+
+		if (odabir == 1)
+		{
+			
+			DodajNaKraj(&head);
+		}
+		else if (odabir == 2)
+		{
+			printf("Ime, prezime, godina rodenja: ");
+			scanf(" %s %s %d", ime, prezime, &dob);
+			DodajNaPocetak(ime, prezime, dob, &head);
+		}
+		else if (odabir == 3)
+		{
+			Ispis(head.next);
+		}
+		else if (odabir == 4)
+		{
+			Position t = NULL;
+			
+			t = PronadiPoPrezimenu(head.next);
+			IspisiElement(t);
+		}
+		else if (odabir == 5)
+		{
+			int x;
+			printf("Unesite godinu rodenja po kojoj zelite izbrisati element:\n");
+			scanf("%d", &x);
+			BrisanjeElementa(x, &head);
+		}
+		else if (odabir == 6)
+		{
+			int x;
+			printf("Unesite godinu rodenja ispred koje zelite umetnuti element:\n");
+			scanf("%d", &x);
+			printf("Ime, prezime, godina rodenja: ");
+			scanf(" %s %s %d", ime, prezime, &dob);
+			UmetniNakon(ime, prezime, dob, x, &head);
+		}
+		else if (odabir == 7)
+		{
+			int x;
+			printf("Unesite godinu rodenja ispred koje zelite umetnuti element:\n");
+			scanf("%d", &x);
+			printf("Ime, prezime, godina rodenja: ");
+			scanf(" %s %s %d", ime, prezime, &dob);
+			UmetniIspred(ime, prezime, dob, x, &head);
+		}
+		else if (odabir == 8)
+		{
+
+			BrisiSve(&head);
+		}
+		else if (odabir == 9)
+		{
+
+			Sortiraj(&head);
+		}
+	}
+	Dealokacija(&head);
+	return 0;
+
+}
+void DodajNaKraj( Position p)
+{
+	Position q;
+	q = (Position)malloc(sizeof(Osoba));
+	if (q == NULL)
+	{
+		printf("Greska u alokaciji!\n");
+	}
+	q->ime = (char*)malloc(1024 * sizeof(char));
+	q->prezime = (char*)malloc(1024 * sizeof(char));
+	
+
+	printf("Ime, prezime, godina rodenja: ");
+	scanf(" %s %s %d", q->ime, q->prezime, &q->god); //ne treba deklarirat god jer postoji u strukturi, a njoj pristupamo pomocu pokazivaca
+
+
+
+
+	while (p->next != NULL)
+		p = p->next;
+	q->next = p->next;
+	p->next = q;
+}
+void DodajNaPocetak(char i[], char pr[], int br, Position p)
+{
+	Position q;
+	q = (Position)malloc(sizeof(Osoba));
+	if (q == NULL)
+	{
+		printf("Greska u alokaciji!\n");
+	}
+	strcpy(q->ime, i);
+	strcpy(q->prezime, pr);
+	q->god = br;
+
+	q->next = p->next;
+	p->next = q;
+}
+
+void Ispis(Position p)
+{
+	while (p != NULL) //idemo od p jer smo u funkciju poslali head.next! U samom headu nema nicega
+	{
+		printf("\n %s %s %d \n\n", p->ime, p->prezime, p->god);
+		p = p->next;
+	}
+}
+void IspisiElement(Position p)
+{
+	printf("Trazeni element je %s %s %d\n", p->ime, p->prezime, p->god);
+}
+Position PronadiPoPrezimenu( Position p)
+{
+	char x[100] = { 0 };
+	printf("Unesite prezime koje zelite traziti:\n");
+	scanf("%s", x);
+
+	while (p != NULL && strcmp(p->prezime, x))
+		p = p->next;
+	return p;
+}
+Position TraziPrethodni(int x, Position p)
+{
+	while (p->next != NULL && p->next->god != x)//mora biti p->next, ako je p->next jednak null nema smisla jer nemamo sta brisat iza prethodnika
+		p = p->next;
+	if (p->next == NULL)
+		return NULL;
+	else
+		return p;
+}
+void BrisanjeElementa(int x, Position p)
+{
+	Position temp;
+	p = TraziPrethodni(x, p);
+	if (p == NULL)
+		printf("Element ne postoji!\n");
+	else
+	{
+		temp = p->next;
+		p->next = p->next->next;
+		free(temp);
+	}
+}
+void Dealokacija(Position p)
+{
+	Position temp;
+	while (p->next != NULL) { //provjeravamo ima li icega iza heada
+		temp = p->next;
+		p->next = p->next->next;
+		free(temp);
+	}
+}
+void UmetniNakon(char i[], char pr[], int br, int x, Position p)
+{
+	Position q;
+	p = p->next;
+	while (p != NULL && p->god != x)
+		p = p->next;
+	if (p == NULL)
+		printf("Element ne postoji!");
+	else
+	{
+		q = (Position)malloc(sizeof(Osoba));
+		if (q == NULL)
+			printf("Greska u alokaciji memorije!\n");
+		strcpy(q->ime, i);
+		strcpy(q->prezime, pr);
+		q->god = br;
+		q->next = p->next;
+		p->next = q;
+	}
+
+}
+void UmetniIspred(char i[], char pr[], int br, int x, Position p)
+{
+	Position q;
+	q = (Position)malloc(sizeof(Osoba));
+	p = TraziPrethodni(x, p);
+	strcpy(q->ime, i);
+	strcpy(q->prezime, pr);
+	q->god = br;
+	q->next = p->next;
+	p->next = q;
+
+}
+void BrisiSve(Position p)
+{
+	Position temp;
+	while (p->next != NULL)
+	{
+		temp = p->next;
+		p->next = p->next->next;
+		free(temp);
+	}
+}
+
+
+void Sortiraj(Position p)
+{
+	Position j, prev_j, temp;
+	Position end = NULL;
+	while (p->next != end)
+	{
+		prev_j = p;
+		j = p->next;
+		while (j->next != end)
+		{
+			if (strcmp(j->prezime, j->next->prezime) > 0)
+			{
+				temp = j->next;
+				prev_j->next = temp;
+				j->next = temp->next;
+				temp->next = j;
+				j = temp;
+
+			}
+			prev_j = j;
+			j = j->next;
+		}
+		end = j;
+	}
+
+}
