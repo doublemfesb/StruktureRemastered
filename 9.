@@ -1,0 +1,222 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include<stdlib.h>
+
+struct _Cvor;
+typedef struct _Cvor* Stablo;
+
+typedef struct _Cvor
+{
+	int el;
+	Stablo L;
+	Stablo D;
+}Cvor;
+
+Stablo DodajElement(Stablo, int);
+void IspisPreorder(Stablo);
+void IspisInorder(Stablo);
+void IspisPostorder(Stablo);
+Stablo Brisi(Stablo, int);
+Stablo Trazi(Stablo, int);
+Stablo TraziMin(Stablo);
+Stablo TraziMax(Stablo);
+void BrisiSve(Stablo);
+
+int main()
+{    
+	int x=0;
+	int odabir=1;
+	Stablo root=NULL;
+	
+	while (odabir != 0)
+	{
+		printf("\nUnosenje novog elementa u stablo(press 1)\n");
+		printf("Trazi element(press 2)\n");
+		printf("Trazi minimum(press 3)\n");
+		printf("Trazi maksikum(press 4)\n");
+		printf("Ispis postorder(press 5)\n");
+		printf("Ispis preorder(press 6)\n");
+		printf("Ispis inorder(press 7)\n");
+		printf("Brisi element(press 8)\n");
+		printf("Brisi sve (press 9)\n");
+		printf("Izadi iz programa (press 0)\n");
+		printf("ODABIR:\n");
+		scanf("%d", &odabir);
+
+		if (odabir == 1)
+		{
+			printf("Unesi element:\n");
+			scanf("%d", &x);
+			root=DodajElement(root, x);
+		}
+		else if (odabir == 2)
+		{
+			printf("Unesi element:\n");
+		    scanf("%d", &x);
+			root = Trazi(root, x);
+		}
+		else if (odabir == 3)
+		{
+		    root=TraziMin(root);
+		}
+		else if (odabir == 4)
+		{
+			root = TraziMax(root);
+		}
+		else if (odabir == 5)
+		{
+			IspisPostorder(root);
+		}
+		else if (odabir == 6)
+		{
+			IspisPreorder(root);
+		}
+		else if (odabir == 7)
+		{
+			IspisInorder(root);
+		}
+		else if (odabir == 8)
+		{  
+			printf("Unesi element koji zelite brisati:\n");
+			scanf("%d", &x);
+			root= Brisi(root, x);
+		}
+		else if (odabir == 9)
+		{
+			BrisiSve(root);
+		}
+	}
+
+	
+	return 0;
+}
+Stablo DodajElement(Stablo s, int x)
+{    
+	
+	if (s == NULL)
+	{
+		s = (Stablo)malloc(sizeof(Cvor));
+		if(s==NULL)
+		{
+			printf("Greska u alokaciji!\n");
+		    return NULL;
+		}
+		s->el = x;
+		s->L = NULL;
+		s->D = NULL;	
+	}
+	else if (s->el < x)
+	{
+		s->D = DodajElement(s->D, x);
+	}
+	else if (s->el > x)
+	{
+		s->L = DodajElement(s->L, x);
+	}
+	else
+		printf("Element vec postoji");
+	return s;
+}
+Stablo Trazi(Stablo s, int x)
+{
+	if (s == NULL)
+		return NULL;
+	else if (s->el == x)
+		return s;
+	else if (s->el < x)
+		return Trazi(s->D, x);
+	else if (s->el > x)
+		return Trazi(s->L, x);
+}
+void IspisPreorder(Stablo s)
+{
+	if (s != NULL)
+	{
+		printf("%d", s->el);
+		IspisPreorder(s->L);
+		IspisPreorder(s->D);
+	}
+	else
+		printf("Stablo je prazno!\n");
+
+}
+void IspisInorder(Stablo s)
+{
+	if (s != NULL)
+	{
+		IspisInorder(s->L);
+		printf("%d", s->el);
+		IspisInorder(s->D);
+	}
+	else
+		printf("Stablo je prazno!\n");
+}
+void IspisPostorder(Stablo s)
+{
+	if (s != NULL)
+	{
+		IspisPostorder(s->L);
+		IspisPostorder(s->D);
+		printf("%d", s->el);
+	}
+	else
+		printf("Stablo je prazno!\n");
+}
+Stablo TraziMin(Stablo s)
+{
+	if (s == NULL)
+		return NULL;
+	else if (s->L == NULL)
+		return s;
+	else
+		return TraziMin(s->L);
+}
+Stablo TraziMax(Stablo s)
+{
+	if (s == NULL)
+		return NULL;
+	else if (s->D = NULL)
+		return s;
+	else
+		return TraziMax(s->D);
+}
+Stablo Brisi(Stablo s, int x)
+{
+	if (s == NULL)
+		return s;
+	else if (x < s->el)
+		s->L = Brisi(s->L, x);
+	else if (x > s->el)
+		s->D = Brisi(s->D, x);
+	else if (s->L!=NULL && s->D!=NULL)
+	{
+		Stablo temp;
+		temp = (Stablo)malloc(sizeof(Cvor));
+		temp = TraziMin(s->D);
+		s->el = temp->el;
+		s->D = Brisi(s->D, s->el);
+     }
+	else
+	{
+		Stablo temp;
+		temp = (Stablo)malloc(sizeof(Cvor));
+		temp = s;
+		if (s->L == NULL)
+			s = s->D;
+		else
+			s = s->L;
+		free(temp);
+	}
+	return s;
+}
+void BrisiSve(Stablo s)
+{
+      if (s != NULL)
+	{
+		BrisiSve(s->L);
+		BrisiSve(s->D);
+		free(s);
+	}
+
+
+}
