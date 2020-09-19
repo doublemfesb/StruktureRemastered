@@ -83,10 +83,10 @@ int JePrisutan(Position p, int x)
 	{
 		if (p->broj == x)
 			return 1;
-		else
-			return 0;
+		
 		p = p->next;
 	}
+	return 0;
 }
 
 void Presijek(Position p, Position s, Position result)
