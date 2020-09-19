@@ -94,13 +94,14 @@ void Presijek(Position p, Position s, Position result)
 	Position temp;
 	temp = (Position)malloc(sizeof(Lista));
 	temp->next = NULL;
+	int succ = 0;
+	p = p->next;
 
-	
 	while (p != NULL)
 	{
 		temp->broj = p->broj;
-		if (JePrisutan(s->next, temp->broj) == 1)
-			SortiraniUnos(result, temp->broj);
+		if (JePrisutan(s, temp->broj))
+			succ=SortiraniUnos(result, temp->broj);
 		p = p->next;
 
 	}
@@ -111,6 +112,8 @@ void Unija(Position p, Position s, Position rez)
 {
 	Position temp;
 	p = p->next;
+	s = s ->next;
+	int succ = 0;
 	while (p != NULL)
 	{   
 		temp = (Position)malloc(sizeof(Lista));
@@ -124,9 +127,11 @@ void Unija(Position p, Position s, Position rez)
 		temp = (Position)malloc(sizeof(Lista));
 		temp->next = NULL;
 		temp->broj = s->broj;
-		if (!JePrisutan(rez->next, temp->broj))
-			SortiraniUnos(rez, temp->broj);
+		if (!JePrisutan(rez, temp->broj))
+		
+			succ=SortiraniUnos(rez, temp->broj);
 			s = s->next;
+		
 	}
 	
 
@@ -134,6 +139,7 @@ void Unija(Position p, Position s, Position rez)
 
 void Ispis(Position p)
 {
+	
 	while (p != NULL)
 	{
 		printf("%d\t", p->broj);
