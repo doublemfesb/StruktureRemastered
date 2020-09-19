@@ -1,0 +1,143 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<stdio.h>
+#include<stdlib.h>
+#define GRESKAALOKACIJE -1;
+
+struct _lista;
+typedef struct _lista* Position;
+
+typedef struct _lista
+{
+	int broj;
+	Position next;
+
+}Lista;
+
+void Ispis(Position);
+int SortiraniUnos(Position, int);
+int JePrisutan(Position, int);
+void Unija(Position, Position, Position);
+void Presijek(Position, Position, Position);
+
+int main()
+{
+	Lista head;
+	head.next = NULL;
+	Lista head2;
+	head2.next = NULL;
+	Lista unija;
+	unija.next = NULL;
+	Lista presijek;
+	presijek.next = NULL;
+	int i = 0;
+	int x = 0;
+	int a = 0;
+	for (i = 0; i < 5; i++)
+	{
+		printf("Unesite element prve liste:\n");
+		scanf("%d", &x);
+		int succ = SortiraniUnos(&head, x);
+    }
+
+	
+
+	for (i = 0; i < 2; i++)
+	{
+		printf("\nUnesite element druge liste:\n");
+		scanf("%d", &a);
+		int succ = SortiraniUnos(&head2, a);
+	}
+	printf("\nLista 1:\n");
+	Ispis(head.next);
+	printf("\nLista 2:\n");
+	Ispis(head2.next);
+	Unija(&head, &head2, &unija);
+	printf("\nUnija:\n");
+	Ispis(unija.next);
+	Presijek(&head, &head2, &presijek);
+	printf("\nPresijek:\n");
+	Ispis(presijek.next);
+	return 0;
+}
+int SortiraniUnos(Position p, int x)
+{
+	while (p->next != NULL && p->next->broj < x)
+		p = p->next;
+	if (p->next == NULL ||p->next->broj != x)
+	{
+		Position q;
+		q = (Position)malloc(sizeof(Lista));
+		if (q == NULL)
+			return GRESKAALOKACIJE;
+		q->broj = x;
+		q->next = p->next;
+		p->next = q;
+	}
+
+	return 0;
+}
+int JePrisutan(Position p, int x)
+{
+
+	while (p != NULL)
+	{
+		if (p->broj == x)
+			return 1;
+		else
+			return 0;
+		p = p->next;
+	}
+}
+
+void Presijek(Position p, Position s, Position result)
+{
+	Position temp;
+	temp = (Position)malloc(sizeof(Lista));
+	temp->next = NULL;
+
+	
+	while (p != NULL)
+	{
+		temp->broj = p->broj;
+		if (JePrisutan(s->next, temp->broj) == 1)
+			SortiraniUnos(result, temp->broj);
+		p = p->next;
+
+	}
+	
+
+}
+void Unija(Position p, Position s, Position rez)
+{
+	Position temp;
+	p = p->next;
+	while (p != NULL)
+	{   
+		temp = (Position)malloc(sizeof(Lista));
+		temp->next = NULL;
+		temp->broj = p->broj;
+		SortiraniUnos(rez, temp->broj);
+		p = p->next;
+	}
+	while (s != NULL)
+	{
+		temp = (Position)malloc(sizeof(Lista));
+		temp->next = NULL;
+		temp->broj = s->broj;
+		if (!JePrisutan(rez->next, temp->broj))
+			SortiraniUnos(rez, temp->broj);
+			s = s->next;
+	}
+	
+
+}
+
+void Ispis(Position p)
+{
+	while (p != NULL)
+	{
+		printf("%d\t", p->broj);
+		p = p->next;
+	}
+
+}
