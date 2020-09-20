@@ -1,0 +1,193 @@
+/****
+Napisati program koji pomoću vezanih listi simulira rad:
+a) stoga,
+b) reda.
+Napomena: Funkcija "push" sprema cijeli broj, slučajno generirani u opsegu od 10 -100
+***/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <time.h>
+
+#define GRESKAALOKACIJE -1
+#define NEMA -3
+
+
+struct _lista;
+typedef struct _lista* Stog;
+typedef struct _lista
+{
+	int broj;
+	Stog next;
+
+}Lista;
+
+struct _lista2;
+typedef struct _lista2* Red;
+typedef struct _lista2
+{
+	int broj;
+	Red next;
+
+}Lista2;
+
+
+int Random(int, int);
+Stog NoviCvorStoga(Stog);
+int PushNaStog(Stog);
+void IspisStoga(Stog);
+int PopSaStoga(Stog);
+void IspisReda(Red);
+int PushNaRed(Red);
+Red StvaranjeNovogCvoraReda(Red);
+int PopSaReda(Red);
+
+int main()
+{
+	srand(time(NULL));
+	Lista s1;
+	s1.next = NULL;
+	Lista2 s2;
+	s2.next = NULL;
+	int odabir = 1;
+
+	while (odabir != 0)
+	{
+		printf("Push na stog(press 1):\n");
+		printf("Pop sa stoga(press 2):\n");
+		printf("Ispis stoga(press 3):\n");
+		printf("Push na red(press 4):\n");
+		printf("Pop sa reda(press 5):\n");
+		printf("Ispis reda(press 6):\n");
+		printf("Izlaz iz programa(press 0):\n");
+		printf("ODABIR:\n");
+		scanf("%d", &odabir);
+		if (odabir == 1)
+		{
+			int succ = PushNaStog(&s1);
+			if (succ == GRESKAALOKACIJE || succ == NEMA)
+				return succ;
+		}
+		else if (odabir == 2)
+		{
+			int succ = PopSaStoga(&s1);
+			if (succ == GRESKAALOKACIJE || succ == NEMA)
+				return succ;
+		}
+		else if (odabir == 3)
+		{
+			printf("\nStog je:\n");
+			IspisStoga(s1.next);
+		}
+		else if (odabir == 4)
+		{
+			int succ = PushNaRed(&s2);
+			if (succ == GRESKAALOKACIJE || succ == NEMA)
+				return succ;
+		}
+		else if (odabir == 5)
+		{
+			int succ = PopSaReda(&s2);
+			if (succ == GRESKAALOKACIJE || succ == NEMA)
+				return succ;
+		}
+		else if (odabir == 6)
+		{
+			printf("\nRed je:\n");
+			IspisReda(s2.next);
+		}
+	}
+
+
+
+	return 0;
+}
+
+int Random(int min, int max)
+{
+	return rand() % (max - min) + min;
+}
+int PushNaStog(Stog s)
+{
+	Stog q=NULL;
+	q = NoviCvorStoga(q);
+	if (q == NULL)
+		return GRESKAALOKACIJE;
+	q->next = s->next;
+	s->next = q;
+	return 0;
+}
+Stog NoviCvorStoga(Stog s)
+{
+	s = (Stog)malloc(sizeof(Lista));
+	if (s == NULL)
+		return NULL;
+	s->broj = Random(10, 100);
+	s->next = NULL;
+	return s;
+}
+void IspisStoga(Stog s)
+{
+	while (s != NULL)
+	{
+		
+		printf("%d\n", s->broj);
+		s = s->next;
+		
+	}
+
+}
+int PopSaStoga(Stog s)
+{
+	if (s->next == NULL)
+		return NEMA;
+	Stog temp = s->next;
+	s->next = temp->next;
+	free(temp);
+	return 0;
+}
+int PushNaRed(Red s)
+{
+	Red q=NULL;
+	q = StvaranjeNovogCvoraReda(q);
+	if (q == NULL)
+		return NEMA;
+	while (s->next != NULL)
+		s = s->next;
+	q->next = s->next;
+	s->next = q;
+	return 0;
+
+}
+Red StvaranjeNovogCvoraReda(Red s)
+{
+	s = (Red)malloc(sizeof(Lista2));
+	if (s == NULL)
+		return NULL;
+	s->broj = Random(10, 100);
+	s->next = NULL;
+	return s;
+
+}
+int PopSaReda(Red s)
+{
+	if (s->next == NULL)
+		return NEMA;
+	else
+	{
+	Red temp;
+	temp = s->next;
+	s->next = temp->next;
+	free(temp);
+	}
+	return 0;
+}
+void IspisReda(Red s)
+{
+	while (s != NULL)
+	{
+		printf("%d\n", s->broj);
+		s = s->next;
+	}
+}
